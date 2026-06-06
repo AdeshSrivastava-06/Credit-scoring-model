@@ -99,11 +99,23 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
 }
 
 /* Result cards */
+.result-section {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.result-panel {
+    width: 100%;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
 .result-good {
     background: linear-gradient(135deg, #f0fff4, #c6f6d5);
     border: 2px solid #48bb78;
     border-radius: 16px;
-    padding: 2rem;
+    padding: 2.2rem 1.8rem;
     text-align: center;
     box-shadow: 0 8px 24px rgba(72,187,120,0.2);
 }
@@ -111,7 +123,7 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     background: linear-gradient(135deg, #fffbeb, #fef3c7);
     border: 2px solid #f6ad55;
     border-radius: 16px;
-    padding: 2rem;
+    padding: 2.2rem 1.8rem;
     text-align: center;
     box-shadow: 0 8px 24px rgba(246,173,85,0.2);
 }
@@ -119,7 +131,7 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     background: linear-gradient(135deg, #fff5f5, #fed7d7);
     border: 2px solid #fc8181;
     border-radius: 16px;
-    padding: 2rem;
+    padding: 2.2rem 1.8rem;
     text-align: center;
     box-shadow: 0 8px 24px rgba(252,129,129,0.2);
 }
@@ -474,35 +486,36 @@ if "Predict" in page:
                         'text-transform:uppercase;letter-spacing:0.08em">'
                         '🎯 Prediction Result</div>', unsafe_allow_html=True)
 
-            res_col, _ = st.columns([1, 1.2])
+            if pred_label == 'Good':
+                css   = 'result-good'
+                emoji = '✅'
+                color = '#276749'
+                advice = ("Your credit profile looks strong. Keep maintaining "
+                          "timely payments and low debt utilization to stay here.")
+            elif pred_label == 'Standard':
+                css   = 'result-standard'
+                emoji = '⚠️'
+                color = '#744210'
+                advice = ("Average credit profile. Reduce outstanding debt and "
+                          "avoid delayed payments to improve your score.")
+            else:
+                css   = 'result-poor'
+                emoji = '❌'
+                color = '#742a2a'
+                advice = ("Below-average credit profile. Prioritise clearing "
+                          "delayed payments and reducing credit utilization urgently.")
 
-            with res_col:
-                if pred_label == 'Good':
-                    css   = 'result-good'
-                    emoji = '✅'
-                    color = '#276749'
-                    advice = ("Your credit profile looks strong. Keep maintaining "
-                              "timely payments and low debt utilization to stay here.")
-                elif pred_label == 'Standard':
-                    css   = 'result-standard'
-                    emoji = '⚠️'
-                    color = '#744210'
-                    advice = ("Average credit profile. Reduce outstanding debt and "
-                              "avoid delayed payments to improve your score.")
-                else:
-                    css   = 'result-poor'
-                    emoji = '❌'
-                    color = '#742a2a'
-                    advice = ("Below-average credit profile. Prioritise clearing "
-                              "delayed payments and reducing credit utilization urgently.")
-
-                st.markdown(f"""
-                <div class="{css}">
-                    <div class="result-emoji">{emoji}</div>
-                    <div class="result-label" style="color:{color}">{pred_label}</div>
+            st.markdown(f"""
+            <div class="result-section">
+                <div class="result-panel">
+                    <div class="{css}">
+                        <div class="result-emoji">{emoji}</div>
+                        <div class="result-label" style="color:{color}">{pred_label}</div>
+                    </div>
+                    <div class="advice">💡 {advice}</div>
                 </div>
-                <div class="advice">💡 {advice}</div>
-                """, unsafe_allow_html=True)
+            </div>
+            """, unsafe_allow_html=True)
 
 
         except Exception as e:
